@@ -13,21 +13,29 @@ namespace GloboTicket_Automation_Selenium_with_C__
 {
     public class SimpleGlobalTicketTest
     {
+
+        private IWebDriver driver;
+
+        [SetUp]
+        public void Setup()
+        {
+            driver = new ChromeDriver(); //Open the Chrome browser.
+            driver.Manage().Window.Maximize(); // this code is for miximising the browser window.
+            driver.Navigate().GoToUrl("http://localhost:4200"); // This is the local host url, where we run your GlobalTicket project.
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+          driver.Quit();
+        }
         [Test]
         public void SimpleTest()
         {
-            var driver = new ChromeDriver(); //Open the Chrome browser.
-            driver.Manage().Window.Maximize(); // this code is for miximising the browser window.
-            driver.Navigate().GoToUrl("http://localhost:4200"); // This is the local host url, where we run your GlobalTicket project.
-
             driver.FindElement(By.Id("full-name")).SendKeys("Munna"); // This is the code where we find the name element by ID and type name with SendKeys method.
-
-
-
-            Thread.Sleep(5000);
             driver.FindElement(By.Id("add-btn")).Click(); // This is the code where we find out the Add button by ID and Click on the button by Click(); method.
 
-            driver.Quit(); // By driver.Quit(); method, the browser will quit.
+        
 
 
         }
@@ -35,9 +43,6 @@ namespace GloboTicket_Automation_Selenium_with_C__
         [Test]
         public void UsingRelativeLocatorsTest()
         {
-            var driver = new ChromeDriver(); //Open the Chrome browser.
-            driver.Manage().Window.Maximize(); // this code is for miximising the browser window.
-            driver.Navigate().GoToUrl("http://localhost:4200"); // This is the local host url, where we run your GlobalTicket project.
 
             Thread.Sleep(5000);
             driver.FindElement(RelativeBy
@@ -45,15 +50,13 @@ namespace GloboTicket_Automation_Selenium_with_C__
                 .Below(By.Id("full-name")))
                 .SendKeys("Something Important");
 
-            driver.Quit(); // By driver.Quit(); method, the browser will quit.
+           
         }
 
         [Test]
         public void SimpleTestAssertion()
         {
-            var driver = new ChromeDriver(); //Open the Chrome browser.
-            driver.Manage().Window.Maximize(); // this code is for miximising the browser window.
-            driver.Navigate().GoToUrl("http://localhost:4200"); // This is the local host url, where we run your GlobalTicket project.
+            
 
             driver.FindElement(By.Id("full-name")).SendKeys("Munna"); // This is the code where we find the name element by ID and type name with SendKeys method.
 
@@ -67,17 +70,11 @@ namespace GloboTicket_Automation_Selenium_with_C__
            
 
 
-            driver.Quit(); // By driver.Quit(); method, the browser will quit.
-
-
         }
 
         [Test]
         public void UsingSendKeysAndClearTest()
         {
-            var driver = new ChromeDriver();
-            driver.Manage().Window.Maximize();
-            driver.Navigate().GoToUrl("http://localhost:4200");
 
             var notesTestArea = driver.FindElement(By.Id("notes"));
             notesTestArea.SendKeys("Will arrive a but late");
@@ -89,7 +86,7 @@ namespace GloboTicket_Automation_Selenium_with_C__
             var photoInput = driver.FindElement(By.Id("photo"));
             photoInput.SendKeys(Path.GetFullPath(Path.Join("Data", "photo.png")));
 
-            driver.Quit();
+
 
         }
 
@@ -97,9 +94,7 @@ namespace GloboTicket_Automation_Selenium_with_C__
         [Test]
         public void PressingKeysTest()
         {
-            var driver = new FirefoxDriver();
-            driver.Manage().Window.Maximize();
-            driver.Navigate().GoToUrl("http://localhost:4200");
+
             
             var nameInput = driver.FindElement(By.Id("full-name"));
             nameInput.SendKeys("Josh Smith");
@@ -112,7 +107,7 @@ namespace GloboTicket_Automation_Selenium_with_C__
             Thread.Sleep(5000);
             nameInput.SendKeys(Keys.Control + "V");
 
-            driver.Quit();
+
 
 
         }
@@ -120,28 +115,22 @@ namespace GloboTicket_Automation_Selenium_with_C__
         [Test]
         public void SelectingDropdownOptionTest()
         {
-            var driver = new FirefoxDriver();
-            driver.Manage().Window.Maximize();
-            driver.Navigate().GoToUrl("http://localhost:4200");
+
 
             var includeLunchDropdown = driver.FindElement(By.Id("include-lunch"));
             var includeLunchSelectElement = new SelectElement(includeLunchDropdown);
 
             includeLunchSelectElement.SelectByText("Yes");
-            Assert.That(includeLunchSelectElement.SelectedOption.GetAttribute("value"), Is.EqualTo("True"));
+            Assert.That(includeLunchSelectElement.SelectedOption.GetAttribute("value"), Is.EqualTo("true"));
 
             includeLunchSelectElement.SelectByValue("false");
             Assert.That(includeLunchSelectElement.SelectedOption.Text, Is.EqualTo("No"));
 
-            driver.Quit();
+
         }
         [Test]
         public void SelectingCheckboxItemsTest()
         {
-            var driver = new ChromeDriver();
-            driver.Manage().Window.Maximize();
-            driver.Navigate().GoToUrl("http://localhost:4200");
-
             var workshop1 = driver.FindElement(By.Id("workshop-1"));
 
             if(!workshop1.Selected)
@@ -151,7 +140,6 @@ namespace GloboTicket_Automation_Selenium_with_C__
 
             Assert.That(workshop1.Selected, Is.True);
 
-            driver.Quit();
 
         }
     }
