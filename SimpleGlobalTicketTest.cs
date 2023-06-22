@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using GloboTicket_Automation_Selenium_with_C__.Page;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Support.UI;
@@ -11,32 +12,24 @@ using System.Threading.Tasks;
 
 namespace GloboTicket_Automation_Selenium_with_C__
 {
-    public class SimpleGlobalTicketTest
+    public class SimpleGlobalTicketTest : BaseTest
     {
 
-        private IWebDriver driver;
+        private OrderPage orderPage;
 
         [SetUp]
-        public void Setup()
+        public new void SetUp()
         {
-            driver = new ChromeDriver(); //Open the Chrome browser.
-            driver.Manage().Window.Maximize(); // this code is for miximising the browser window.
-            driver.Navigate().GoToUrl("http://localhost:4200"); // This is the local host url, where we run your GlobalTicket project.
+            orderPage = new OrderPage(GetDriver());
         }
 
-        [TearDown]
-        public void TearDown()
-        {
-          driver.Quit();
-        }
+
         [Test]
+        [Category("Test without assertion")]
         public void SimpleTest()
         {
-            driver.FindElement(By.Id("full-name")).SendKeys("Munna"); // This is the code where we find the name element by ID and type name with SendKeys method.
-            driver.FindElement(By.Id("add-btn")).Click(); // This is the code where we find out the Add button by ID and Click on the button by Click(); method.
-
-        
-
+            orderPage.EnterName("Munna"); // This is the code where we find the name element by ID and type name with SendKeys method.
+            orderPage.ClickAddButton(); // This is the code where we find out the Add button by ID and Click on the button by Click(); method.
 
         }
 
@@ -44,29 +37,22 @@ namespace GloboTicket_Automation_Selenium_with_C__
         public void UsingRelativeLocatorsTest()
         {
 
-            Thread.Sleep(5000);
-            driver.FindElement(RelativeBy
-                .WithLocator(By.TagName("textarea"))
-                .Below(By.Id("full-name")))
-                .SendKeys("Something Important");
+            orderPage.SelectWorkshop(0);
 
            
         }
 
         [Test]
+        [Description("Test with assertion")]
         public void SimpleTestAssertion()
         {
-            
 
-            driver.FindElement(By.Id("full-name")).SendKeys("Munna"); // This is the code where we find the name element by ID and type name with SendKeys method.
 
-            Thread.Sleep(5000);
-            driver.FindElement(By.Id("add-btn")).Click(); // This is the code where we find out the Add button by ID and Click on the button by Click(); method.
+            orderPage.EnterName("Munna"); // This is the code where we find the name element by ID and type name with SendKeys method.
+            orderPage.ClickAddButton(); // This is the code where we find out the Add button by ID and Click on the button by Click(); method.
 
             // Using Assertion
-
-            var totalPrice = driver.FindElement(By.CssSelector("tfoot tr th:nth-child(3)"));
-            Assert.AreEqual("$100.00", totalPrice.Text, "Total price is not valid.");
+            Assert.That(orderPage.GetTotalPrice(), Is.EqualTo("$100.00"), "Total price is not valid.");
            
 
 
@@ -76,14 +62,14 @@ namespace GloboTicket_Automation_Selenium_with_C__
         public void UsingSendKeysAndClearTest()
         {
 
-            var notesTestArea = driver.FindElement(By.Id("notes"));
+            var notesTestArea = GetDriver().FindElement(By.Id("notes"));
             notesTestArea.SendKeys("Will arrive a but late");
             notesTestArea.Clear();
             notesTestArea.SendKeys("5% discount");
 
             Assert.That(notesTestArea.GetAttribute("value"), Is.EqualTo("5% discount"));
 
-            var photoInput = driver.FindElement(By.Id("photo"));
+            var photoInput = GetDriver().FindElement(By.Id("photo"));
             photoInput.SendKeys(Path.GetFullPath(Path.Join("Data", "photo.png")));
 
 
@@ -96,15 +82,13 @@ namespace GloboTicket_Automation_Selenium_with_C__
         {
 
             
-            var nameInput = driver.FindElement(By.Id("full-name"));
+            var nameInput = GetDriver().FindElement(By.Id("full-name"));
             nameInput.SendKeys("Josh Smith");
 
 
             nameInput.SendKeys(Keys.Control + "A");
             nameInput.SendKeys(Keys.Control + "C");
-            Thread.Sleep(5000);
             nameInput.Clear();
-            Thread.Sleep(5000);
             nameInput.SendKeys(Keys.Control + "V");
 
 
@@ -117,7 +101,7 @@ namespace GloboTicket_Automation_Selenium_with_C__
         {
 
 
-            var includeLunchDropdown = driver.FindElement(By.Id("include-lunch"));
+            var includeLunchDropdown = GetDriver().FindElement(By.Id("include-lunch"));
             var includeLunchSelectElement = new SelectElement(includeLunchDropdown);
 
             includeLunchSelectElement.SelectByText("Yes");
@@ -131,7 +115,7 @@ namespace GloboTicket_Automation_Selenium_with_C__
         [Test]
         public void SelectingCheckboxItemsTest()
         {
-            var workshop1 = driver.FindElement(By.Id("workshop-1"));
+            var workshop1 = GetDriver().FindElement(By.Id("workshop-1"));
 
             if(!workshop1.Selected)
             {
