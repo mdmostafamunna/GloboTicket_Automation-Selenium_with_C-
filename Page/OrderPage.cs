@@ -7,19 +7,19 @@ using System.Threading.Tasks;
 
 namespace GloboTicket_Automation_Selenium_with_C__.Page
 {
-    internal class OrderPage
+    internal class OrderPage : BasePage
     {
-        private IWebDriver driver;
 
-        public OrderPage(IWebDriver driver)
+        public OrderPage(IWebDriver driver) : base(driver)
         {
-            this.driver = driver;
-        }
 
+        }
         private IWebElement Name => driver.FindElement(By.Id("full-name"));
         private IWebElement AddButton => driver.FindElement(By.Id("add-btn"));
 
         private IWebElement TotalPrice => driver.FindElement(By.CssSelector("tfoot tr th:nth-child(3)"));
+
+        private IWebElement OrderButton => driver.FindElement(By.Id("order-btn"));
 
         private List<IWebElement> Workshops => driver.FindElements(RelativeBy
                 .WithLocator(By.TagName("textarea"))
@@ -47,8 +47,18 @@ namespace GloboTicket_Automation_Selenium_with_C__.Page
 
         }
 
+       public void ClickOrderButton()
+        {
+            OrderButton.Click();
+        }
 
 
+       
+
+        public void ScrollToTheOrderButton()
+        {
+            ScrollToElement(OrderButton);
+        }
     }
 
 
