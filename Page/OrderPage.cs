@@ -21,6 +21,8 @@ namespace GloboTicket_Automation_Selenium_with_C__.Page
 
         private IWebElement OrderButton => driver.FindElement(By.Id("order-btn"));
 
+        private List<IWebElement> OrderTableItems => driver.FindElements(By.CssSelector(".order-summary tbody tr")).ToList();
+
         private List<IWebElement> Workshops => driver.FindElements(RelativeBy
                 .WithLocator(By.TagName("textarea"))
                 .Below(Name))
@@ -58,6 +60,27 @@ namespace GloboTicket_Automation_Selenium_with_C__.Page
         public void ScrollToTheOrderButton()
         {
             ScrollToElement(OrderButton);
+        }
+
+        public void ClickOnTheTicketRemoveButton(int index)
+        {
+            OrderTableItems[index].FindElement(By.TagName("button")).Click();
+        }
+
+
+        public int GetOrderTicketsCount()
+        {
+            return OrderTableItems.Count;
+        }
+
+        public void ScrollToTheTicketRemoveButton(int index)
+        {
+            ScrollToElement(OrderTableItems[index]);
+        }
+
+        public string GetNameValue()
+        {
+            return Name.GetAttribute("value");
         }
     }
 
