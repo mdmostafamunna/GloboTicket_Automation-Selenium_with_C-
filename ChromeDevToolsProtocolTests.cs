@@ -43,5 +43,21 @@ namespace GloboTicket_Automation_Selenium_with_C__
             Thread.Sleep(5000);
         }
 
+        [Test]
+
+        public async Task EmulateNetworkConditionsTest()
+        {
+            var networkConditions = new OpenQA.Selenium.DevTools.V114.Network.EmulateNetworkConditionsCommandSettings()
+            {
+                DownloadThroughput = 10000000
+            };
+
+            await session.GetVersionSpecificDomains<OpenQA.Selenium.DevTools.V114.DevToolsSessionDomains>()
+                .Network
+                .EmulateNetworkConditions(networkConditions);
+
+            GetDriver().Navigate().GoToUrl("https://selenium.dev");
+        }
+
     }
 }
