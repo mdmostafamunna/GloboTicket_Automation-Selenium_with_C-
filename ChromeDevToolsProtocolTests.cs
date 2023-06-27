@@ -49,7 +49,7 @@ namespace GloboTicket_Automation_Selenium_with_C__
         {
             var networkConditions = new OpenQA.Selenium.DevTools.V114.Network.EmulateNetworkConditionsCommandSettings()
             {
-                DownloadThroughput = 10000000
+                DownloadThroughput = 1000
             };
 
             await session.GetVersionSpecificDomains<OpenQA.Selenium.DevTools.V114.DevToolsSessionDomains>()
@@ -59,5 +59,53 @@ namespace GloboTicket_Automation_Selenium_with_C__
             GetDriver().Navigate().GoToUrl("https://selenium.dev");
         }
 
+        
+        [Test]
+
+        public async Task InterceptNetworkRequestTest()
+        {
+            var fetch = session.GetVersionSpecificDomains<OpenQA.Selenium.DevTools.V114.DevToolsSessionDomains>()
+                .Fetch;
+
+            var enableCommandSettings = new OpenQA.Selenium.DevTools.V114.Fetch.EnableCommandSettings();
+
+            var requestPattern = new OpenQA.Selenium.DevTools.V114.Fetch.RequestPattern()
+            {
+                RequestStage = OpenQA.Selenium.DevTools.V114.Fetch.RequestStage.Request,
+                ResourceType = OpenQA.Selenium.DevTools.V114.Network.ResourceType.XHR,
+                UrlPattern = "*/workshop.json"
+            };
+
+            enableCommandSettings.Patterns = new OpenQA.Selenium.DevTools.V114.Fetch.RequestPattern[] { requestPattern };
+
+            await fetch.Enable(enableCommandSettings);
+
+            async void requestIntercepted(object sender, OpenQA.Selenium.DevTools.V114.Fetch.RequestPausedEventArgs e)
+            {
+                await fetch.FulfillRequest(new OpenQA.Selenium.DevTools.V114.Fetch.FulfillRequestCommandSettings()
+                {
+                    RequestId = e.RequestId,
+                    Body = Convert.ToBase64String(Encoding.UTF8.GetBytes(
+                    """
+                    [
+                      {"id": 1, "name": "Workshop", "price":400, "checked":false},
+                      {"id": 2, "name": "Workshop", "price":200, "checked":false},
+                      {"id": 3, "name": "Workshop", "price":300, "checked":false}
+                    
+                    
+                    ]
+
+                    """)),
+
+                    ResponseCode = 200
+                });
+            }
+
+            fetch.RequestPaused += requestIntercepted;
+
+            GetDriver().Navigate().GoToUrl("http://localhost:4200");
+            Thread.Sleep(10000);
+
+        }
     }
 }
