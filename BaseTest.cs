@@ -19,12 +19,18 @@ namespace GloboTicket_Automation_Selenium_with_C__
             return driver; 
         }
 
+        protected void SetDriver(IWebDriver driver)
+        {
+            this.driver = driver;
+        }
+
         [SetUp]
-        public void Setup()
+        public virtual void Setup()
         {
             driver = CreateDriver(ConfigurationProvider.Configuration["browser"]); //Open the Chrome browser.
             driver.Manage().Window.Maximize(); // this code is for miximising the browser window.
             driver.Navigate().GoToUrl(ConfigurationProvider.Configuration["local_url"]); // This is the local host url, where we run your GlobalTicket project.
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(15);
         }
 
         [TearDown]
@@ -33,14 +39,14 @@ namespace GloboTicket_Automation_Selenium_with_C__
             driver.Quit();
         }
 
-        private IWebDriver CreateDriver(string browserName)
+        protected IWebDriver CreateDriver(string browserName)
         {
             switch(browserName.ToLowerInvariant())
             {
                 case "chrome":
                     var chromeOptions = new ChromeOptions();
-                    chromeOptions.AddArguments(GetBrowserArguments());
-                    return new ChromeDriver(chromeOptions);
+                    //chromeOptions.AddArguments(GetBrowserArguments());
+                    return new ChromeDriver();
 
                 case "firefox":
                     var firefoxOptions = new FirefoxOptions();
